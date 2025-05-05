@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Chat from "@/components/Chat";
 
 
 export const metadata: Metadata = {
@@ -18,6 +19,7 @@ export default function RootLayout({
       
       >
         {children}
+        <Chat />
       </body>
     </html>
   );

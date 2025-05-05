@@ -1,0 +1,395 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": [
+        "Hi",
+        "Hello",
+        "Hey",
+        "Hi there",
+        "Hello there",
+        "Hey there",
+        "Good morning",
+        "Good afternoon",
+        "Good evening",
+        "Hiya",
+        "Yo",
+        "Greetings",
+        "Howdy",
+        "What's up",
+        "Hey garage",
+        "Hello auto shop"
+      ],
+      "responses": [
+        "Hello! Welcome to Speedy Auto Repairs. How can we help with your vehicle today?",
+        "Hi there! Need help with car repairs, maintenance, or diagnostics?",
+        "Greetings! What's your vehicle's make and model?",
+        "Hey car owner! Is this about a repair, service, or general question?",
+        "Good day! Our mechanics are standing by. What brings you in today?",
+        "Welcome to the best garage in town! What can we do for your ride?"
+      ]
+    },
+    {
+      "tag": "services",
+      "patterns": [
+        "What services do you offer?",
+        "What repairs do you do?",
+        "Can you fix transmissions?",
+        "Do you do oil changes?",
+        "What kind of maintenance services?",
+        "List your auto services",
+        "What can you repair?",
+        "Do you service brakes?",
+        "AC repair available?",
+        "Engine diagnostics?",
+        "Tire services?",
+        "What mechanical work do you do?",
+        "Do you do electrical work?",
+        "Suspension repairs?",
+        "Exhaust system work?"
+      ],
+      "responses": [
+        "We offer complete auto care: oil changes, brake service, engine repair, transmission work, AC service, and full diagnostics.",
+        "Our services include: 1) Routine maintenance 2) Engine/transmission 3) Brakes/suspension 4) Electrical systems 5) AC repair",
+        "Yes! From simple oil changes to complex engine overhauls - we do it all. What does your vehicle need?",
+        "We specialize in: brake repairs, transmission service, engine diagnostics, and complete vehicle inspections.",
+        "Full-service garage capabilities: mechanical, electrical, cooling systems, and preventative maintenance."
+      ]
+    },
+    {
+      "tag": "pricing",
+      "patterns": [
+        "How much for an oil change?",
+        "What's your brake service price?",
+        "Cost of transmission flush?",
+        "Price for AC recharge?",
+        "How much does a tune up cost?",
+        "What are your service rates?",
+        "Diagnostic fee?",
+        "Tire rotation price?",
+        "Cost to replace alternator?",
+        "Price check for brake pads",
+        "How much for spark plugs?",
+        "Labor rates?",
+        "Estimate for timing belt?",
+        "Wheel alignment cost?",
+        "Battery replacement price?"
+      ],
+      "responses": [
+        "Oil changes start at $49.99 (conventional) and $79.99 (synthetic). Want our full maintenance menu?",
+        "Brake service starts at $129 for pads/shoes. We'll provide exact pricing after inspection.",
+        "Transmission services range from $99 (flush) to $400 (fluid/filter change). Need an estimate?",
+        "AC recharge is $99, full system diagnosis $149. Let us know your vehicle's symptoms.",
+        "Our hourly labor rate is $120. Most jobs have flat-rate pricing - what service do you need?"
+      ]
+    },
+    {
+      "tag": "appointments",
+      "patterns": [
+        "How to book appointment?",
+        "Can I schedule service?",
+        "Need to make appointment",
+        "When can you take my car?",
+        "Available for service today?",
+        "How to reserve a spot?",
+        "Next available opening?",
+        "Schedule oil change",
+        "Book brake inspection",
+        "Make service appointment",
+        "Do you take walk-ins?",
+        "Same-day appointments?",
+        "How far in advance to book?",
+        "Emergency repair scheduling?",
+        "Quick service availability?"
+      ],
+      "responses": [
+        "Book online 24/7 or call (555) 123-4567. Next available slot is tomorrow at 9am - shall I reserve it?",
+        "We accept walk-ins but appointments get priority. Current wait time is 1-2 hours for walk-ins.",
+        "Schedule now: 1) Online via our website 2) Call us 3) Stop by. Emergency repairs get same-day service.",
+        "Our calendar shows openings for tomorrow. Would you like morning or afternoon?",
+        "Quick-service appointments available daily. Need oil change, tire rotation, or basic maintenance?"
+      ]
+    },
+    {
+      "tag": "diagnostics",
+      "patterns": [
+        "Check engine light is on",
+        "Car making strange noise",
+        "Vehicle won't start",
+        "Brakes feel spongy",
+        "AC not blowing cold",
+        "Transmission slipping",
+        "Engine overheating",
+        "Electrical problems",
+        "Suspension issues",
+        "Exhaust smoke",
+        "Warning lights on dash",
+        "Car shaking when driving",
+        "Battery keeps dying",
+        "Odd smells from car",
+        "Fluid leaks under car"
+      ],
+      "responses": [
+        "That check engine light could mean many things. We can run diagnostics for $99 - want to bring it in?",
+        "Strange noises often indicate serious issues. Describe the sound and we'll recommend next steps.",
+        "For no-start situations: 1) Check battery connections 2) Listen for fuel pump 3) Note any warning lights.",
+        "Spongy brakes are dangerous! We should inspect your brake system immediately. Can you come today?",
+        "AC problems often need refrigerant recharge or compressor work. We'll diagnose for $149."
+      ]
+    },
+    {
+      "tag": "warranty",
+      "patterns": [
+        "Do you offer warranties?",
+        "Guarantee on repairs?",
+        "How long is parts warranty?",
+        "Labor warranty?",
+        "Coverage for repairs?",
+        "What if problem returns?",
+        "Stand behind your work?",
+        "Warranty policy?",
+        "Guaranteed service?",
+        "Parts replacement policy?",
+        "Warranty length?",
+        "Nationwide warranty?",
+        "Manufacturer warranties?",
+        "Comeback policy?",
+        "Repair guarantees?"
+      ],
+      "responses": [
+        "All repairs come with 12-month/12,000-mile warranty. Original parts have manufacturer warranties too.",
+        "We guarantee our work! Most repairs have 1-year warranty - ask your service advisor for details.",
+        "Parts and labor warranties vary: 1) Major components=2 years 2) Standard repairs=1 year 3) Maintenance=90 days",
+        "Yes! 100% satisfaction guarantee. If issues arise with our repair, we'll fix it at no charge."
+      ]
+    },
+    {
+      "tag": "payment",
+      "patterns": [
+        "What payment methods?",
+        "Do you take credit cards?",
+        "Cash only?",
+        "Payment plans available?",
+        "Insurance accepted?",
+        "Do you invoice?",
+        "Can I pay with check?",
+        "Mobile payments?",
+        "Financing options?",
+        "Deferred payment?",
+        "Payment at pickup?",
+        "Deposit required?",
+        "Auto insurance claims?",
+        "Warranty claims?",
+        "Payment options?"
+      ],
+      "responses": [
+        "We accept all major credit cards, cash, checks, and offer financing through Synchrony Auto Care.",
+        "Payment options: 1) Credit/debit 2) Cash 3) Check 4) Financing 5) Insurance (with prior approval)",
+        "For major repairs: $200 deposit, balance due at pickup. We work with most extended warranty companies.",
+        "Yes to credit cards! We also offer 6-month payment plans for repairs over $500 (subject to approval)."
+      ]
+    },
+    {
+      "tag": "hours",
+      "patterns": [
+        "What are your hours?",
+        "When do you open?",
+        "Weekend hours?",
+        "Holiday schedule?",
+        "Early drop-off?",
+        "Late pickup?",
+        "Sunday hours?",
+        "Today's opening times?",
+        "Close for lunch?",
+        "Emergency hours?",
+        "After hours service?",
+        "Earliest appointment?",
+        "Latest appointment?",
+        "Service bay hours?",
+        "Office hours?"
+      ],
+      "responses": [
+        "Our hours: Mon-Fri 7:30am-6pm, Sat 8am-4pm. Closed Sundays. Early drop-off available by arrangement.",
+        "Standard hours: Weekdays 7:30-6, Saturdays 8-4. After-hours drop box for keys/documents available.",
+        "We're open now until 6pm today. Saturday appointments fill fast - want me to check availability?"
+      ]
+    },
+    {
+      "tag": "location",
+      "patterns": [
+        "Where are you located?",
+        "What's your address?",
+        "Directions to garage",
+        "Nearest intersection?",
+        "Parking availability?",
+        "Shuttle service?",
+        "Public transport access?",
+        "Map link?",
+        "GPS coordinates?",
+        "Nearby landmarks?",
+        "Service area?",
+        "Mobile service?",
+        "Multiple locations?",
+        "Branch near me?",
+        "Service radius?"
+      ],
+      "responses": [
+        "We're at 123 Auto Lane, near the corner of Main and 5th. Free customer parking in rear.",
+        "Address: 123 Auto Lane. Easy access from Highway 101 - exit at Main Street. Need GPS coordinates?",
+        "Our location has: 1) Free parking 2) Waiting lounge 3) Loaner cars ($25/day) 4) Shuttle service"
+      ]
+    },
+    {
+      "tag": "emergency",
+      "patterns": [
+        "Car broke down",
+        "Emergency repair needed",
+        "Stranded with car trouble",
+        "Vehicle won't start",
+        "Flat tire service",
+        "Locked out of car",
+        "Battery jump start",
+        "Tow to your shop",
+        "Immediate assistance",
+        "Roadside help",
+        "After hours mechanic",
+        "Urgent car repair",
+        "Can't drive vehicle",
+        "Overheating engine",
+        "Brake failure"
+      ],
+      "responses": [
+        "Emergency? Call (555) 911-REPA now! We offer 24/7 towing and after-hours lockout service.",
+        "For breakdowns: 1) Turn on hazards 2) Call us at (555) 123-4567 3) We'll dispatch help immediately",
+        "Urgent repairs get priority. Our tow partners can bring your vehicle in today - shall I arrange it?"
+      ]
+    },
+    {
+      "tag": "parts",
+      "patterns": [
+        "Do you sell parts?",
+        "OEM parts available?",
+        "Aftermarket options?",
+        "Cost for alternator?",
+        "Battery prices?",
+        "Brake pad options?",
+        "Tire sales?",
+        "Wiper blades in stock?",
+        "Oil filter prices?",
+        "Air filters available?",
+        "Performance parts?",
+        "Parts department?",
+        "Order special parts?",
+        "Wheel bearings in stock?",
+        "Spark plug options?"
+      ],
+      "responses": [
+        "We stock common parts and can order anything overnight. OEM and quality aftermarket options available.",
+        "Parts pricing varies: 1) Economy 2) OEM 3) Premium. Want a quote for your specific vehicle?",
+        "Yes! We sell tires, batteries, wipers, filters, and most maintenance items. Need anything installed?"
+      ]
+    },
+    {
+      "tag": "makes",
+      "patterns": [
+        "Do you work on European cars?",
+        "Service Japanese vehicles?",
+        "American car specialists?",
+        "Work on luxury brands?",
+        "Hybrid/electric experience?",
+        "Service my BMW?",
+        "Fix Toyotas?",
+        "Work on Fords?",
+        "Mercedes specialists?",
+        "Tesla certified?",
+        "Service classic cars?",
+        "Diesel mechanics?",
+        "Motorcycle repairs?",
+        "Commercial vehicles?",
+        "RV repairs?"
+      ],
+      "responses": [
+        "We service all makes/models - European, Asian, domestic, hybrids, and most EVs. What's your vehicle?",
+        "Certified technicians for: 1) European (BMW/Mercedes) 2) Japanese 3) American 4) Korean makes",
+        "Yes to hybrids/EVs! Our mechanics complete regular training on high-voltage systems."
+      ]
+    },
+    {
+      "tag": "maintenance",
+      "patterns": [
+        "When to change oil?",
+        "Tire rotation schedule?",
+        "Preventative maintenance?",
+        "30/60/90k service?",
+        "Winter prep checklist?",
+        "Summer car care?",
+        "Fluid change intervals?",
+        "Brake inspection frequency?",
+        "Battery maintenance?",
+        "AC system checkup?",
+        "Transmission service interval?",
+        "Timing belt replacement?",
+        "Cooling system service?",
+        "Fuel system cleaning?",
+        "Factory maintenance schedule?"
+      ],
+      "responses": [
+        "Recommended: Oil changes every 5k miles, tire rotation every 7.5k, full inspection every 15k miles.",
+        "Follow your manual, but typically: 30k=Major fluids 60k=Belts/hoses 90k=Full system inspection",
+        "Winter prep should include: battery test, antifreeze check, wiper blades, and tire inspection."
+      ]
+    },
+    {
+      "tag": "estimates",
+      "patterns": [
+        "Get repair estimate",
+        "How much will this cost?",
+        "Free diagnostic?",
+        "Ballpark price?",
+        "Rough estimate?",
+        "Online quote?",
+        "Email estimate?",
+        "Approximate cost?",
+        "Price range for repair?",
+        "Diagnostic fee?",
+        "Written estimate?",
+        "Binding quote?",
+        "Cost breakdown?",
+        "Insurance estimate?",
+        "Warranty estimate?"
+      ],
+      "responses": [
+        "Free estimates after diagnosis ($99 fee applies if you decline repairs). Want to describe symptoms?",
+        "We provide written estimates with parts/labor breakdown. No surprises - approved before work begins.",
+        "For accurate estimates, we need to inspect the vehicle. Can you bring it in today?"
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "Bye",
+        "Goodbye",
+        "See you",
+        "Thanks, I'm done",
+        "Exit",
+        "That's all",
+        "I'm finished",
+        "Talk later",
+        "Closing chat",
+        "End chat",
+        "Done for now",
+        "Signing off",
+        "No more questions",
+        "All done",
+        "Finished"
+      ],
+      "responses": [
+        "Safe driving! Remember to schedule your next maintenance before 5,000 miles.",
+        "Thanks for choosing us! Your vehicle is in good hands with our ASE-certified techs.",
+        "See you soon! Don't hesitate to call if any other car questions come up.",
+        "Happy motoring! We'll call when your vehicle is ready for pickup.",
+        "Until next time! Check your dashboard lights regularly for early warnings."
+      ]
+    }
+  ]
+}
