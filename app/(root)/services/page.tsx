@@ -2,42 +2,56 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-
 const servicesData = [
   {
     id: "tires",
     title: "Tire Services",
-    description:
-      "We offer a wide range of tire services, from installation to repair, for various types of vehicles. Find the perfect tires for your car, truck, or SUV.",
+    description: "We offer a wide range of tire services, from installation to repair, for various types of vehicles. Find the perfect tires for your car, truck, or SUV.",
     image: "/images/tire4.jpeg",
+    icon: "🚙",
     link: "/services/tires",
   },
   {
     id: "brakes",
     title: "Brake Services",
-    description:
-      "Ensure your vehicle's braking system is in top condition with our comprehensive brake services, including brake pad replacement, fluid flush, and more.",
+    description: "Ensure your vehicle's braking system is in top condition with our comprehensive brake services, including brake pad replacement, fluid flush, and more.",
     image: "/images/brakes5.jpeg",
+    icon: "🚗",
     link: "/services/brakes",
   },
   {
     id: "oil-change",
     title: "Oil Change Services",
-    description:
-      "Keep your engine running smoothly with our quick and affordable oil change services. We use high-quality oils and filters for optimal performance.",
+    description: "Keep your engine running smoothly with our quick and affordable oil change services. We use high-quality oils and filters for optimal performance.",
     image: "/images/images.jpeg",
-    link: "/services/oil-change",
+    icon: "🛢️",
+    link: "/services/oilchange",
   },
   {
     id: "battery",
     title: "Battery Services",
-    description:
-      "Get your car's battery checked and replaced if necessary. Our experts ensure that you won't be left stranded with a dead battery.",
+    description: "Get your car's battery checked and replaced if necessary. Our experts ensure that you won't be left stranded with a dead battery.",
     image: "/images/battery1.jpeg",
-    link: "/services/battery",
+    icon: "🔋",
+    link: "/services/batteries",
+  },
+  {
+    id: "engine",
+    title: "Engine Diagnostics",
+    description: "Advanced diagnostics to identify engine issues and optimize performance. We use state-of-the-art tools to keep your vehicle running smoothly.",
+    image: "/images/diagnostic1.jpeg", // (Ensure this image exists)
+    icon: "🔧",
+    link: "/services/engine",
+  },
+  {
+    id: "air-conditioning",
+    title: "Air Conditioning",
+    description: "Stay cool with our professional A/C services, including refrigerant recharge, leak detection, and system repairs.",
+    image: "/images/ac1.jpeg", // (Ensure this image exists)
+    icon: "❄️",
+    link: "/services/air",
   },
 ];
-
 const ServicesPage = () => {
   return (
     <section className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-16">
