@@ -18,7 +18,7 @@ export default function OilChangeService() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const products = await getServiceProducts("oilchange");
+        const products = await getServiceProducts("oilChange");
         
         const grouped: Record<string, ServiceProduct[]> = {};
         products.forEach((product) => {
