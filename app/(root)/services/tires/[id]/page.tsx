@@ -12,7 +12,7 @@ import { ServiceProduct } from "@/app/lib/serviceTypes";
 const databaseId = "680716c20000a52ce526";
 const collectionId = "680718020033cfadcb44"; // Tires collection ID
 
-const TireDetails = ({ params }: { params: { id: string } }) => {
+const TireDetails =({ params }: { params: Promise<{ id: string }> }) => {
   const router = useRouter();
   const [product, setProduct] = useState<ServiceProduct | null>(null);
   const [loading, setLoading] = useState(true);

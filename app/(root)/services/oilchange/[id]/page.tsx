@@ -12,7 +12,7 @@ import { ServiceProduct } from "@/app/lib/serviceTypes";
 const databaseId = "680716c20000a52ce526";
 const collectionId = "6807173c001ede4b2686"; // Oil Change collection ID
 
-const OilChangeDetails = ({ params }: { params: { id: string } }) => {
+const OilChangeDetails = ({ params }: { params: Promise<{ id: string }> }) => {
   const router = useRouter();
   const [product, setProduct] = useState<ServiceProduct | null>(null);
   const [loading, setLoading] = useState(true);

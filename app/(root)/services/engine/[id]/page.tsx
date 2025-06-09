@@ -624,7 +624,7 @@ import { ServiceProduct } from "@/app/lib/serviceTypes";
 const databaseId = "680716c20000a52ce526";
 const collectionId = "68071783002d63cc1dc2"; // Engine collection ID (different from brakes)
 
-const EngineServiceDetails = ({ params }: { params: { id: string } }) => {
+const EngineServiceDetails =({ params }: { params: Promise<{ id: string }> }) => {
   const router = useRouter();
   const [product, setProduct] = useState<ServiceProduct | null>(null);
   const [loading, setLoading] = useState(true);

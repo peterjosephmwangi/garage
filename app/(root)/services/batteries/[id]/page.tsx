@@ -12,7 +12,7 @@ import { ServiceProduct } from "@/app/lib/serviceTypes";
 const databaseId = "680716c20000a52ce526";
 const collectionId = "6807175e00341dbc8fd5"; // Replace with actual battery collection ID
 
-const ServiceDetailsPage = ({ params }: { params: { id: string } }) => {
+const ServiceDetailsPage =({ params }: { params: Promise<{ id: string }> }) => {
   const router = useRouter();
   const [product, setProduct] = useState<ServiceProduct | null>(null);
   const [loading, setLoading] = useState(true);
