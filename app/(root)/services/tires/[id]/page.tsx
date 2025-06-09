@@ -22,8 +22,11 @@ const TireDetails =({ params }: { params: Promise<{ id: string }> }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { id } = params;
-        setProductId(id);
+         // Unwrap the params promise
+         const resolvedParams = await Promise.resolve(params);
+         const { id } = resolvedParams;
+     
+         setProductId(id); // Store the ID in state
         
         const response = await databases.getDocument(
           databaseId,
