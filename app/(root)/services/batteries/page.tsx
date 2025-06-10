@@ -406,11 +406,8 @@ interface BatteryProduct extends AppwriteDocument {
   serviceType: "batteries";
 }
 
-interface PageProps {
-  params: { id: string };
-}
 
-const ServiceDetailsPage = ({ params }: PageProps) => {
+const ServiceDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => {
   const router = useRouter();
   const [product, setProduct] = useState<BatteryProduct | null>(null);
   const [loading, setLoading] = useState(true);
@@ -420,8 +417,10 @@ const ServiceDetailsPage = ({ params }: PageProps) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { id } = params;
-        setProductId(id);
+        const resolvedParams = await Promise.resolve(params);
+        const { id } = resolvedParams;
+    
+        setProductId(id); // Store the ID in state
 
         const response = await databases.getDocument(
           databaseId,
