@@ -4,7 +4,30 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { databases } from "@/app/lib/appwrite";
 import { Query } from "appwrite";
-import { ServiceProduct } from "@/app/lib/serviceTypes";
+// import { ServiceProduct } from "@/app/lib/serviceTypes";
+
+// Type definitions
+interface AppwriteDocument {
+  $id: string;
+  $createdAt?: string;
+  $updatedAt?: string;
+  $permissions?: string[];
+  $databaseId?: string;
+  $collectionId?: string;
+  [key: string]: any;
+}
+
+interface ServiceProduct extends AppwriteDocument {
+  title: string;
+  description: string;
+  features: string[];
+  price: string;
+  supplier: string;
+  rating: number;
+  reviews: number;
+  imageUrl?: string;
+  serviceType: "brakes";
+}
 
 // Brake service collection ID
 const databaseId = "680716c20000a52ce526";
