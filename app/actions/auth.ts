@@ -29,13 +29,7 @@ export const signOut = async () => {
 };
 
 
-// export const signInWithOAuth = async (provider: OAuthProvider) => {
-//     try {
-//       await account.createOAuth2Session(provider, "/dashboard", "/signin");
-//     } catch (error) {
-//       throw error;
-//     }
-// };
+
 export const signInWithOAuth = async (provider: OAuthProvider) => {
   try {
     await account.createOAuth2Session(
