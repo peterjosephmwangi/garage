@@ -50,7 +50,7 @@ const OilChangeDetails: React.FC<OilChangeDetailsProps> = ({ params }) => {
           rating: response.rating || 0,
           reviews: response.reviews || 0,
           imageUrl: response.imageUrl || "",
-          serviceType: "oilchange"
+          serviceType: "oilChange"
         };
         
         setProduct(productData);
@@ -277,7 +277,7 @@ const RelatedOilProducts: React.FC<RelatedOilProductsProps> = ({
           rating: doc.rating || 0,
           reviews: doc.reviews || 0,
           imageUrl: doc.imageUrl || "",
-          serviceType: "oilchange"
+          serviceType: "oilChange"
         }));
         
         setRelatedProducts(products);
