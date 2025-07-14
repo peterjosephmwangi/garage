@@ -6,7 +6,9 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { databases } from "@/app/lib/appwrite";
 import { Query } from "appwrite";
-import { ServiceProduct } from "@/app/lib/serviceTypes";
+// import { ServiceProduct } from "@/app/lib/serviceTypes";
+import { ServiceProduct } from "@/app/lib/types"; // Update this import
+
 
 // Tires service collection ID
 const databaseId = "680716c20000a52ce526";
