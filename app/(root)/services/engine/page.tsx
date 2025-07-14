@@ -6,8 +6,10 @@ import React, { useEffect, useState } from "react";
 import { ScrollMenu, VisibilityContext } from "react-horizontal-scrolling-menu";
 import "react-horizontal-scrolling-menu/dist/styles.css";
 import { FaRegArrowAltCircleRight, FaRegArrowAltCircleLeft } from "react-icons/fa";
+// import { getServiceProducts } from "@/app/actions/getServiceProducts";
+// import { ServiceProduct } from "@/app/lib/serviceTypes";
+import { ServiceProduct } from "@/app/lib/types"; // Update this import
 import { getServiceProducts } from "@/app/actions/getServiceProducts";
-import { ServiceProduct } from "@/app/lib/serviceTypes";
 import Link from "next/link";
 
 // Arrow components with proper typing
