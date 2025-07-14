@@ -5,8 +5,13 @@ import React, { useEffect, useState } from "react";
 import { ScrollMenu, VisibilityContext } from "react-horizontal-scrolling-menu";
 import "react-horizontal-scrolling-menu/dist/styles.css";
 import { FaRegArrowAltCircleRight, FaRegArrowAltCircleLeft } from "react-icons/fa";
+// import { getServiceProducts } from "@/app/actions/getServiceProducts";
+// import { ServiceProduct } from "@/app/lib/serviceTypes";
+
+// app/(root)/services/batteries/page.tsx
+import { ServiceProduct } from "@/app/lib/types"; // Update this import
 import { getServiceProducts } from "@/app/actions/getServiceProducts";
-import { ServiceProduct } from "@/app/lib/serviceTypes";
+
 import Link from "next/link";
 
 // Arrow components with proper typing
@@ -46,15 +51,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => (
     className="flex-shrink-0"
     style={{ marginRight: "16px" }}
   >
+    <>
+
     <Link href={`/services/batteries/${product.$id}`} passHref>
       <div className="cursor-pointer w-72 border border-blue-100 rounded-lg p-6 text-center shadow-sm hover:shadow-md transition hover:scale-105 bg-blue-50">
         {product.imageUrl && (
           <img
-            src={product.imageUrl}
-            alt={product.title}
-            className="mb-4 w-full h-48 object-contain rounded"
+          src={product.imageUrl}
+          alt={product.title}
+          className="mb-4 w-full h-48 object-contain rounded"
           />
-        )}
+          )}
         <h3 className="text-xl font-bold text-blue-800 mb-2">
           {product.title}
         </h3>
@@ -69,6 +76,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => (
         </button>
       </div>
     </Link>
+          </>
   </div>
 );
 
