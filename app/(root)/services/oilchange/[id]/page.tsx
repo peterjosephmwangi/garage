@@ -161,7 +161,7 @@ const OilChangeDetails: React.FC<OilChangeDetailsProps> = ({ params }) => {
               Price:{" "}
               <span className="text-2xl text-blue-800">Ksh {product.price}</span>
             </p>
-            <div className="flex items-center gap-4 mb-6">
+            {/* <div className="flex items-center gap-4 mb-6">
               <div className="text-yellow-500 text-lg">
                 {"★".repeat(Math.floor(product.rating)) +
                   (product.rating % 1 > 0 ? "☆" : "")}
@@ -169,7 +169,20 @@ const OilChangeDetails: React.FC<OilChangeDetailsProps> = ({ params }) => {
               <span className="text-blue-600">
                 {product.rating} ({product.reviews} reviews)
               </span>
-            </div>
+            </div> */}
+
+<div className="flex items-center gap-4 mb-6">
+  <div className="text-yellow-500 text-lg">
+    {product.rating !== undefined
+      ? "★".repeat(Math.floor(product.rating)) +
+        (product.rating % 1 > 0 ? "☆" : "")
+      : "No rating"}
+  </div>
+  <span className="text-blue-600">
+    {product.rating !== undefined ? product.rating : "N/A"} (
+    {product.reviews !== undefined ? product.reviews : 0} reviews)
+  </span>
+</div>
             <div className="flex flex-wrap gap-4">
               <button
                 onClick={() => alert("Added to cart!")}
