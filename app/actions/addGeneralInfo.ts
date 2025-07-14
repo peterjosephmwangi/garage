@@ -7,7 +7,7 @@ const collectionId = "67c1a3b300317e80f997"; // Your new collection ID
 
 import { databases } from "../lib/appwrite";
 
-/
+
 export interface ProjectDetails {
   projectId: string;
   projectcategory: string;
