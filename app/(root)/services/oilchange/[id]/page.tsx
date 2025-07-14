@@ -145,10 +145,14 @@ const OilChangeDetails: React.FC<OilChangeDetailsProps> = ({ params }) => {
                 Key Benefits:
               </h3>
               <ul className="list-disc pl-6 text-blue-600">
-                {product.features.map((feature, index) => (
-                  <li key={index}>{feature}</li>
-                ))}
-              </ul>
+  {product.features && product.features.length > 0 ? (
+    product.features.map((feature, index) => (
+      <li key={index}>{feature}</li>
+    ))
+  ) : (
+    <li>No features available</li>
+  )}
+</ul>
             </div>
             <p className="text-lg font-semibold text-blue-600 mb-2">
               Supplier: <span className="font-bold">{product.supplier}</span>
