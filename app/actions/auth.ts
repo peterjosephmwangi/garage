@@ -1,7 +1,8 @@
+// app/actions/auth.ts
 import { account, ID } from "../lib/appwrite";
 import { OAuthProvider } from "appwrite";
 
-// ✅ Sign Up with Email & Password
+// Sign Up with Email & Password
 export const signUp = async (email: string, password: string, name: string) => {
   try {
     return await account.create(ID.unique(), email, password, name);
@@ -10,16 +11,16 @@ export const signUp = async (email: string, password: string, name: string) => {
   }
 };
 
-
+// Sign In with Email & Password
 export const signIn = async (email: string, password: string) => {
-    try {
-      return await account.createEmailPasswordSession(email, password);
-    } catch (error) {
-      throw error;
-    }
+  try {
+    return await account.createEmailPasswordSession(email, password);
+  } catch (error) {
+    throw error;
+  }
 };
 
-// ✅ Sign Out
+// Sign Out
 export const signOut = async () => {
   try {
     await account.deleteSession("current");
@@ -28,8 +29,7 @@ export const signOut = async () => {
   }
 };
 
-
-
+// Sign In with OAuth
 export const signInWithOAuth = async (provider: OAuthProvider) => {
   try {
     await account.createOAuth2Session(
@@ -42,18 +42,20 @@ export const signInWithOAuth = async (provider: OAuthProvider) => {
     throw error;
   }
 };
+
+// Send OTP for Phone Authentication
 export const sendOTP = async (phone: string) => {
   try {
-    return await account.createSession("phone", phone);
+    return await account.createSession(ID.unique(), phone);
   } catch (error) {
     throw error;
   }
 };
 
-
+// Verify OTP for Phone Authentication
 export const verifyOTP = async (userId: string, otp: string) => {
   try {
-    return await account.updateSession(userId, otp);
+    return await account.updatePhoneSession(userId, otp);
   } catch (error) {
     throw error;
   }
