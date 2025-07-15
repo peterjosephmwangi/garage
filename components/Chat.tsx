@@ -1,11 +1,12 @@
+// components/Chat.tsx
 "use client";
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import "./chat.css";
 import garageIntents from "../app/data/garageIntents.json";
 
 // Levenshtein distance implementation for fuzzy matching
-function levenshteinDistance(a, b) {
-  const matrix = [];
+function levenshteinDistance(a: string, b: string): number {
+  const matrix: number[][] = [];
   for (let i = 0; i <= b.length; i++) {
     matrix[i] = [i];
   }
@@ -37,8 +38,8 @@ const Chat = () => {
     },
   ]);
   const [input, setInput] = useState("");
-  const [context, setContext] = useState(null);
-  const messagesEndRef = useRef(null);
+  const [context, setContext] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Pre-process intents for better matching
   const processedIntents = useMemo(() => {
@@ -59,7 +60,7 @@ const Chat = () => {
   useEffect(scrollToBottom, [messages]);
 
   // Fuzzy match function
-  const fuzzyMatch = (str1, str2, threshold = 0.7) => {
+  const fuzzyMatch = (str1: string, str2: string, threshold = 0.7): boolean => {
     const distance = levenshteinDistance(str1.toLowerCase(), str2.toLowerCase());
     const maxLength = Math.max(str1.length, str2.length);
     const similarity = 1 - distance / maxLength;
@@ -67,16 +68,16 @@ const Chat = () => {
   };
 
   // Keyword scoring function
-  const calculateKeywordScore = (input, intent) => {
+  const calculateKeywordScore = (input: string, intent: any): number => {
     const inputWords = input.toLowerCase().match(/\b(\w+)\b/g) || [];
-    const matchedKeywords = intent.keywords.filter(keyword => 
-      inputWords.some(inputWord => fuzzyMatch(inputWord, keyword))
+    const matchedKeywords = intent.keywords.filter((keyword: string) => 
+      inputWords.some((inputWord: string) => fuzzyMatch(inputWord, keyword))
     );
     return matchedKeywords.length / intent.keywords.length;
   };
 
   // Find the best matching intent
-  const findBestMatch = (userInput) => {
+  const findBestMatch = (userInput: string) => {
     const lowerInput = userInput.toLowerCase();
     let bestMatch = null;
     let highestScore = 0;
@@ -141,7 +142,7 @@ const Chat = () => {
   };
 
   // Handle context tracking
-  const updateContext = (intentTag) => {
+  const updateContext = (intentTag: string) => {
     const contextIntents = ["diagnostics", "estimates", "appointments"];
     if (contextIntents.includes(intentTag)) {
       setContext(intentTag);
@@ -151,7 +152,7 @@ const Chat = () => {
   };
 
   // Get appropriate response
-  const getResponse = (userInput) => {
+  const getResponse = (userInput: string): string => {
     const { intent, score, isExact } = findBestMatch(userInput);
     updateContext(intent.tag);
 
@@ -165,7 +166,7 @@ const Chat = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 
@@ -217,7 +218,7 @@ const Chat = () => {
         </div>
       ) : (
         <button className="chat-fab" onClick={toggleChat}>
-         💬
+          💬
         </button>
       )}
     </>
