@@ -8,6 +8,89 @@ import Link from "next/link";
 import { ServiceType, serviceTypes } from "@/app/lib/serviceTypes";
 import { ServiceProduct } from "@/app/lib/types";
 
+// Define the structure for service data
+interface ServiceData {
+  title: string;
+  description: string;
+  serviceOptions: { name: string; description: string; price: string }[];
+}
+
+// Define the serviceData object with all ServiceType keys
+const serviceData: Partial<Record<ServiceType, ServiceData>> = {
+  airConditioning: {
+    title: "❄️ Air Conditioning Repair & Maintenance",
+    description: "Stay cool with our expert AC repair and maintenance services.",
+    serviceOptions: [
+      {
+        name: "Cars (Sedans, Hatchbacks)",
+        description: "Efficient AC services for comfortable city driving.",
+        price: "$80 - $120",
+      },
+      // Add other options as needed
+    ],
+  },
+  brakes: {
+    title: "🛑 Brake Repair & Maintenance",
+    description: "Keep your stopping power reliable with our brake services.",
+    serviceOptions: [
+      {
+        name: "Standard Brake Service",
+        description: "Complete inspection and pad replacement.",
+        price: "$120 - $180",
+      },
+      // Add other options as needed
+    ],
+  },
+  tires: {
+    title: "🚗 Tire Services",
+    description: "High-quality tire installation and maintenance for all vehicles.",
+    serviceOptions: [
+      {
+        name: "Tire Replacement",
+        description: "Replace worn tires with premium brands.",
+        price: "$100 - $200 per tire",
+      },
+      // Add other options as needed
+    ],
+  },
+  oilChange: {
+    title: "🛢️ Oil Change Services",
+    description: "Keep your engine running smoothly with regular oil changes.",
+    serviceOptions: [
+      {
+        name: "Standard Oil Change",
+        description: "Includes oil filter replacement and basic inspection.",
+        price: "$40 - $80",
+      },
+      // Add other options as needed
+    ],
+  },
+  battery: {
+    title: "🔋 Battery Services",
+    description: "Reliable battery replacement and maintenance for your vehicle.",
+    serviceOptions: [
+      {
+        name: "Standard Battery Replacement",
+        description: "High-quality batteries for all vehicle types.",
+        price: "$100 - $180",
+      },
+      // Add other options as needed
+    ],
+  },
+  engine: {
+    title: "⚙️ Engine Repair & Maintenance",
+    description: "Expert engine diagnostics and repair services.",
+    serviceOptions: [
+      {
+        name: "Engine Diagnostic",
+        description: "Comprehensive engine health check.",
+        price: "$80 - $150",
+      },
+      // Add other options as needed
+    ],
+  },
+};
+
 const LeftArrow = () => {
   const { scrollPrev } = React.useContext(VisibilityContext);
   return (
@@ -58,40 +141,13 @@ const ServiceTemplate = ({
     setSuppliers(grouped);
   }, [products]);
 
-  // Service-specific data
-  const serviceData = {
-    airConditioning: {
-      title: "❄️ Air Conditioning Repair & Maintenance",
-      description: "Stay cool with our expert AC repair and maintenance services.",
-      serviceOptions: [
-        {
-          name: "Cars (Sedans, Hatchbacks)",
-          description: "Efficient AC services for comfortable city driving.",
-          price: "$80 - $120",
-        },
-        // ... other options
-      ],
-    },
-    brakes: {
-      title: "🛑 Brake Repair & Maintenance",
-      description: "Keep your stopping power reliable with our brake services.",
-      serviceOptions: [
-        {
-          name: "Standard Brake Service",
-          description: "Complete inspection and pad replacement.",
-          price: "$120 - $180",
-        },
-        // ... other options
-      ],
-    },
-    // ... other services
-  };
-
-  const currentService = serviceData[serviceType.value] || {
-    title: serviceType.label,
-    description: "",
-    serviceOptions: [],
-  };
+  // Access the current service with a fallback
+  const currentService: ServiceData =
+    serviceData[serviceType.value] || {
+      title: serviceType.label,
+      description: "",
+      serviceOptions: [],
+    };
 
   return (
     <section className="bg-blue-50 min-h-screen py-12">
@@ -151,11 +207,13 @@ const ServiceTemplate = ({
                     className="cursor-pointer flex-shrink-0 w-72 border rounded-lg p-6 text-center shadow-sm hover:shadow-md transition hover:scale-105"
                     style={{ marginRight: "16px" }}
                   >
-                    <img
-                      src={product.imageUrl}
-                      alt={product.title}
-                      className="mb-4 w-full h-48 object-contain rounded"
-                    />
+                    {product.imageUrl && (
+                      <img
+                        src={product.imageUrl}
+                        alt={product.title}
+                        className="mb-4 w-full h-48 object-contain rounded"
+                      />
+                    )}
                     <h3 className="text-xl font-bold text-blue-800 mb-2">
                       {product.title}
                     </h3>
