@@ -1,7 +1,8 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
 import Chat from "@/components/Chat";
-
+import Cart from "@/components/Cart";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,11 +16,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-      
-      >
+      <body>
         {children}
         <Chat />
+        <Cart />
       </body>
     </html>
   );
