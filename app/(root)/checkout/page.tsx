@@ -4,21 +4,11 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/app/lib/store/cartStore";
-import { ArrowLeft, CreditCard, Smartphone, DollarSign } from "lucide-react";
-
-interface MpesaState {
-  isInitiating: boolean;
-  isPolling: boolean;
-  message: string;
-  status: 'idle' | 'initiating' | 'polling' | 'success' | 'failed' | 'timeout';
-}
-
-interface CardInfo {
-  cardName: string;
-  cardNumber: string;
-  expiryDate: string;
-  cvv: string;
-}
+import { ArrowLeft, CreditCard, Smartphone, DollarSign, User } from "lucide-react";
+import { useMpesaPayment } from "../../../hooks/useMpesaPayment";
+import { DatabaseService } from "../../../services/databaseService";
+import { CustomerInfo, CardInfo } from "../../lib/product";
+import { isValidMpesaPhone, simulatePaymentProcess } from "../../../utils/paymentUtils";
 
 const CheckoutPage: React.FC = () => {
   const router = useRouter();
@@ -27,19 +17,27 @@ const CheckoutPage: React.FC = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [mpesaPhone, setMpesaPhone] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  
+  const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+  });
+  
   const [cardInfo, setCardInfo] = useState<CardInfo>({
     cardName: "",
     cardNumber: "",
     expiryDate: "",
     cvv: ""
   });
-  
-  const [mpesaState, setMpesaState] = useState<MpesaState>({
-    isInitiating: false,
-    isPolling: false,
-    message: "",
-    status: 'idle'
-  });
+
+  // Use existing M-Pesa hook
+  const { mpesaState, initiateMpesaPayment, isProcessing: mpesaProcessing } = useMpesaPayment(
+    selectedPaymentMethod,
+    true // Always consider modal "open" for checkout
+  );
 
   // Redirect if cart is empty
   useEffect(() => {
@@ -48,11 +46,25 @@ const CheckoutPage: React.FC = () => {
     }
   }, [items, router]);
 
-  const isValidMpesaPhone = (phone: string): boolean => {
-    const cleanPhone = phone.replace(/\s+/g, '');
-    const kenyanPhoneRegex = /^(?:254|\+254|0)?([17]\d{8})$/;
-    return kenyanPhoneRegex.test(cleanPhone);
-  };
+  // Sync processing state with M-Pesa processing
+  useEffect(() => {
+    if (selectedPaymentMethod === "mpesa") {
+      setIsProcessing(mpesaProcessing);
+    }
+  }, [mpesaProcessing, selectedPaymentMethod]);
+
+  // Create a virtual product representing the cart
+  const createCartProduct = () => ({
+    $id: `CART-${Date.now()}`,
+    title: `Cart with ${getTotalItems()} items`,
+    description: `Order containing ${items.map(item => item.title).join(', ')}`,
+    features: items.map(item => `${item.quantity}x ${item.title}`),
+    price: `KES ${getTotalPrice().toLocaleString()}`,
+    supplier: "Multiple suppliers",
+    rating: 5,
+    reviews: 0,
+    imageUrl: items[0]?.imageUrl || "",
+  });
 
   const isValidCard = (): boolean => {
     return (
@@ -63,80 +75,81 @@ const CheckoutPage: React.FC = () => {
     );
   };
 
+  const isValidCustomerInfo = (): boolean => {
+    return (
+      customerInfo.name.trim() !== "" &&
+      customerInfo.email.trim() !== "" &&
+      customerInfo.phone.trim() !== "" &&
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerInfo.email)
+    );
+  };
+
+  const canProceedWithPayment = (): boolean => {
+    if (!isValidCustomerInfo() || !selectedPaymentMethod) {
+      return false;
+    }
+
+    switch (selectedPaymentMethod) {
+      case "mpesa":
+        return isValidMpesaPhone(mpesaPhone);
+      case "card":
+        return isValidCard();
+      case "paypal":
+        return true;
+      default:
+        return false;
+    }
+  };
+
+  const handlePaymentSuccess = () => {
+    clearCart();
+    router.push("/payment/success");
+  };
+
   const handleMpesaPayment = async () => {
     if (!isValidMpesaPhone(mpesaPhone)) {
-      setMpesaState({
-        ...mpesaState,
-        message: "Please enter a valid Safaricom number",
-        status: 'failed'
-      });
+      setErrorMessage("Please enter a valid Safaricom number");
       return;
     }
 
-    setIsProcessing(true);
-    setMpesaState({
-      isInitiating: true,
-      isPolling: false,
-      message: "Initiating M-Pesa payment...",
-      status: 'initiating'
-    });
-
+    setErrorMessage(null);
+    const cartProduct = createCartProduct();
+    
     try {
-      // Simulate M-Pesa STK Push
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      setMpesaState({
-        isInitiating: false,
-        isPolling: true,
-        message: "Please check your phone and enter your M-Pesa PIN",
-        status: 'polling'
-      });
-
-      // Simulate polling for payment confirmation
-      await new Promise(resolve => setTimeout(resolve, 10000));
-      
-      setMpesaState({
-        isInitiating: false,
-        isPolling: false,
-        message: "Payment successful! Order confirmed.",
-        status: 'success'
-      });
-
-      // Clear cart and redirect after success
-      setTimeout(() => {
-        clearCart();
-        router.push("/order-confirmation");
-      }, 2000);
-
+      await initiateMpesaPayment(mpesaPhone, cartProduct, customerInfo, handlePaymentSuccess);
     } catch (error) {
-      setMpesaState({
-        isInitiating: false,
-        isPolling: false,
-        message: "Payment failed. Please try again.",
-        status: 'failed'
-      });
-    } finally {
-      setIsProcessing(false);
+      setErrorMessage(error instanceof Error ? error.message : "M-Pesa payment failed");
     }
   };
 
   const handleCardPayment = async () => {
     if (!isValidCard()) {
-      alert("Please fill in all card details correctly");
+      setErrorMessage("Please fill in all card details correctly");
       return;
     }
 
     setIsProcessing(true);
+    setErrorMessage(null);
     
     try {
-      // Simulate card processing
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await simulatePaymentProcess("Card", cardInfo.cardNumber);
       
-      alert("Card payment processed successfully!");
-      clearCart();
-      router.push("/order-confirmation");
+      // Create order record using existing service
+      await DatabaseService.createOrder(`CARD-${Date.now()}`, {
+        productId: `CART-${Date.now()}`,
+        productTitle: `Cart with ${getTotalItems()} items`,
+        price: `KES ${getTotalPrice().toLocaleString()}`,
+        supplier: "Multiple suppliers",
+        customerInfo: JSON.stringify(customerInfo),
+        paymentMethod: "card",
+        transactionId: `CARD-${Date.now()}`,
+        status: "paid",
+        orderDate: new Date().toISOString(),
+      });
+      
+      handlePaymentSuccess();
     } catch (error) {
-      alert("Card payment failed. Please try again.");
+      setErrorMessage(error instanceof Error ? error.message : "Card payment failed");
     } finally {
       setIsProcessing(false);
     }
@@ -144,24 +157,40 @@ const CheckoutPage: React.FC = () => {
 
   const handlePayPalPayment = async () => {
     setIsProcessing(true);
+    setErrorMessage(null);
     
     try {
-      // Simulate PayPal processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await simulatePaymentProcess("PayPal", customerInfo.email);
       
-      alert("PayPal payment processed successfully!");
-      clearCart();
-      router.push("/order-confirmation");
+      // Create order record using existing service
+      await DatabaseService.createOrder(`PAYPAL-${Date.now()}`, {
+        productId: `CART-${Date.now()}`,
+        productTitle: `Cart with ${getTotalItems()} items`,
+        price: `KES ${getTotalPrice().toLocaleString()}`,
+        supplier: "Multiple suppliers",
+        customerInfo: JSON.stringify(customerInfo),
+        paymentMethod: "paypal",
+        transactionId: `PAYPAL-${Date.now()}`,
+        status: "paid",
+        orderDate: new Date().toISOString(),
+      });
+      
+      handlePaymentSuccess();
     } catch (error) {
-      alert("PayPal payment failed. Please try again.");
+      setErrorMessage(error instanceof Error ? error.message : "PayPal payment failed");
     } finally {
       setIsProcessing(false);
     }
   };
 
   const handleProcessPayment = () => {
+    if (!isValidCustomerInfo()) {
+      setErrorMessage("Please fill in all customer information fields correctly");
+      return;
+    }
+
     if (!selectedPaymentMethod) {
-      alert("Please select a payment method");
+      setErrorMessage("Please select a payment method");
       return;
     }
 
@@ -176,7 +205,7 @@ const CheckoutPage: React.FC = () => {
         handlePayPalPayment();
         break;
       default:
-        alert("Invalid payment method selected");
+        setErrorMessage("Invalid payment method selected");
     }
   };
 
@@ -192,6 +221,7 @@ const CheckoutPage: React.FC = () => {
           <button
             onClick={() => router.back()}
             className="flex items-center text-blue-600 hover:text-blue-800 mr-4"
+            disabled={isProcessing}
           >
             <ArrowLeft size={20} className="mr-2" />
             Back
@@ -200,17 +230,80 @@ const CheckoutPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Payment Methods */}
+          {/* Left Column - Customer Info & Payment Methods */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Customer Information */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="font-semibold text-blue-800 mb-6 flex items-center">
+                <User className="mr-2" size={20} />
+                Customer Information
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  placeholder="Full Name *"
+                  value={customerInfo.name}
+                  onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
+                  className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 ${
+                    customerInfo.name.trim() === "" 
+                      ? "border-red-300 focus:ring-red-500" 
+                      : "border-gray-300 focus:ring-blue-500"
+                  }`}
+                  disabled={isProcessing}
+                  required
+                />
+                
+                <input
+                  type="email"
+                  placeholder="Email Address *"
+                  value={customerInfo.email}
+                  onChange={(e) => setCustomerInfo({...customerInfo, email: e.target.value})}
+                  className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 ${
+                    customerInfo.email.trim() === "" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerInfo.email)
+                      ? "border-red-300 focus:ring-red-500" 
+                      : "border-gray-300 focus:ring-blue-500"
+                  }`}
+                  disabled={isProcessing}
+                  required
+                />
+                
+                <input
+                  type="tel"
+                  placeholder="Phone Number *"
+                  value={customerInfo.phone}
+                  onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
+                  className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 ${
+                    customerInfo.phone.trim() === "" 
+                      ? "border-red-300 focus:ring-red-500" 
+                      : "border-gray-300 focus:ring-blue-500"
+                  }`}
+                  disabled={isProcessing}
+                  required
+                />
+                
+                <input
+                  type="text"
+                  placeholder="Delivery Address"
+                  value={customerInfo.address}
+                  onChange={(e) => setCustomerInfo({...customerInfo, address: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={isProcessing}
+                />
+              </div>
+            </div>
+
             {/* Payment Methods */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <h3 className="font-semibold text-blue-800 mb-6 flex items-center">
                 <CreditCard className="mr-2" size={20} />
                 Payment Method
               </h3>
+              
               <div className="space-y-4">
                 {/* M-Pesa */}
-                <div className="border border-gray-300 rounded-lg p-4 hover:border-blue-300 transition">
+                <div className={`border border-gray-300 rounded-lg p-4 transition ${
+                  isValidCustomerInfo() ? "hover:border-blue-300" : "opacity-50"
+                }`}>
                   <label className="flex items-center cursor-pointer">
                     <input
                       type="radio"
@@ -219,7 +312,7 @@ const CheckoutPage: React.FC = () => {
                       checked={selectedPaymentMethod === "mpesa"}
                       onChange={(e) => setSelectedPaymentMethod(e.target.value)}
                       className="mr-3 w-4 h-4"
-                      disabled={isProcessing}
+                      disabled={isProcessing || !isValidCustomerInfo()}
                     />
                     <div className="flex items-center">
                       <div className="bg-green-600 text-white px-3 py-1 rounded text-sm font-bold mr-3 flex items-center">
@@ -229,7 +322,8 @@ const CheckoutPage: React.FC = () => {
                       <span className="font-medium">Pay with M-Pesa</span>
                     </div>
                   </label>
-                  {selectedPaymentMethod === "mpesa" && (
+                  
+                  {selectedPaymentMethod === "mpesa" && isValidCustomerInfo() && (
                     <div className="mt-4 space-y-3 ml-7">
                       <input
                         type="tel"
@@ -249,7 +343,7 @@ const CheckoutPage: React.FC = () => {
                         </p>
                       )}
 
-                      {/* M-Pesa Status Messages */}
+                      {/* Reuse M-Pesa status display from existing modal */}
                       {mpesaState.message && (
                         <div
                           className={`p-3 rounded-lg ${
@@ -270,12 +364,25 @@ const CheckoutPage: React.FC = () => {
                           </div>
                         </div>
                       )}
+                      
+                      {/* M-Pesa Instructions */}
+                      <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <h4 className="font-semibold text-green-800 mb-2">M-Pesa Payment Instructions:</h4>
+                        <ol className="text-sm text-green-700 list-decimal list-inside space-y-1">
+                          <li>Click "Pay KES {getTotalPrice().toLocaleString()}" to initiate payment</li>
+                          <li>Check your phone for M-Pesa PIN prompt</li>
+                          <li>Enter your M-Pesa PIN to complete payment</li>
+                          <li>Wait for confirmation message</li>
+                        </ol>
+                      </div>
                     </div>
                   )}
                 </div>
 
-                {/* Credit/Debit Card */}
-                <div className="border border-gray-300 rounded-lg p-4 hover:border-blue-300 transition">
+                {/* Credit/Debit Card - Reusing card validation logic */}
+                <div className={`border border-gray-300 rounded-lg p-4 transition ${
+                  isValidCustomerInfo() ? "hover:border-blue-300" : "opacity-50"
+                }`}>
                   <label className="flex items-center cursor-pointer">
                     <input
                       type="radio"
@@ -284,7 +391,7 @@ const CheckoutPage: React.FC = () => {
                       checked={selectedPaymentMethod === "card"}
                       onChange={(e) => setSelectedPaymentMethod(e.target.value)}
                       className="mr-3 w-4 h-4"
-                      disabled={isProcessing}
+                      disabled={isProcessing || !isValidCustomerInfo()}
                     />
                     <div className="flex items-center">
                       <div className="bg-blue-600 text-white px-3 py-1 rounded text-sm font-bold mr-3 flex items-center">
@@ -294,15 +401,14 @@ const CheckoutPage: React.FC = () => {
                       <span className="font-medium">Credit/Debit Card</span>
                     </div>
                   </label>
-                  {selectedPaymentMethod === "card" && (
+                  
+                  {selectedPaymentMethod === "card" && isValidCustomerInfo() && (
                     <div className="mt-4 space-y-3 ml-7">
                       <input
                         type="text"
                         placeholder="Cardholder Name"
                         value={cardInfo.cardName}
-                        onChange={(e) =>
-                          setCardInfo({ ...cardInfo, cardName: e.target.value })
-                        }
+                        onChange={(e) => setCardInfo({ ...cardInfo, cardName: e.target.value })}
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         disabled={isProcessing}
                       />
@@ -310,9 +416,7 @@ const CheckoutPage: React.FC = () => {
                         type="text"
                         placeholder="Card Number (1234 5678 9012 3456)"
                         value={cardInfo.cardNumber}
-                        onChange={(e) =>
-                          setCardInfo({ ...cardInfo, cardNumber: e.target.value })
-                        }
+                        onChange={(e) => setCardInfo({ ...cardInfo, cardNumber: e.target.value })}
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         disabled={isProcessing}
                       />
@@ -321,9 +425,7 @@ const CheckoutPage: React.FC = () => {
                           type="text"
                           placeholder="MM/YY"
                           value={cardInfo.expiryDate}
-                          onChange={(e) =>
-                            setCardInfo({ ...cardInfo, expiryDate: e.target.value })
-                          }
+                          onChange={(e) => setCardInfo({ ...cardInfo, expiryDate: e.target.value })}
                           className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           disabled={isProcessing}
                         />
@@ -331,9 +433,7 @@ const CheckoutPage: React.FC = () => {
                           type="text"
                           placeholder="CVV"
                           value={cardInfo.cvv}
-                          onChange={(e) =>
-                            setCardInfo({ ...cardInfo, cvv: e.target.value })
-                          }
+                          onChange={(e) => setCardInfo({ ...cardInfo, cvv: e.target.value })}
                           className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           disabled={isProcessing}
                         />
@@ -343,7 +443,9 @@ const CheckoutPage: React.FC = () => {
                 </div>
 
                 {/* PayPal */}
-                <div className="border border-gray-300 rounded-lg p-4 hover:border-blue-300 transition">
+                <div className={`border border-gray-300 rounded-lg p-4 transition ${
+                  isValidCustomerInfo() ? "hover:border-blue-300" : "opacity-50"
+                }`}>
                   <label className="flex items-center cursor-pointer">
                     <input
                       type="radio"
@@ -352,7 +454,7 @@ const CheckoutPage: React.FC = () => {
                       checked={selectedPaymentMethod === "paypal"}
                       onChange={(e) => setSelectedPaymentMethod(e.target.value)}
                       className="mr-3 w-4 h-4"
-                      disabled={isProcessing}
+                      disabled={isProcessing || !isValidCustomerInfo()}
                     />
                     <div className="flex items-center">
                       <div className="bg-yellow-500 text-white px-3 py-1 rounded text-sm font-bold mr-3 flex items-center">
@@ -363,37 +465,6 @@ const CheckoutPage: React.FC = () => {
                     </div>
                   </label>
                 </div>
-              </div>
-            </div>
-
-            {/* Customer Information */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="font-semibold text-blue-800 mb-6">Customer Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  placeholder="First Name"
-                  className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={isProcessing}
-                />
-                <input
-                  type="text"
-                  placeholder="Last Name"
-                  className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={isProcessing}
-                />
-                <input
-                  type="email"
-                  placeholder="Email Address"
-                  className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={isProcessing}
-                />
-                <input
-                  type="tel"
-                  placeholder="Phone Number"
-                  className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={isProcessing}
-                />
               </div>
             </div>
           </div>
@@ -419,7 +490,7 @@ const CheckoutPage: React.FC = () => {
                         {item.title}
                       </h4>
                       <p className="text-gray-600 text-xs">
-                        Qty: {item.quantity} × Ksh {item.price}
+                        Qty: {item.quantity} × KES {item.price}
                       </p>
                     </div>
                   </div>
@@ -430,41 +501,52 @@ const CheckoutPage: React.FC = () => {
               <div className="border-t border-gray-200 pt-4 space-y-2">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal ({getTotalItems()} items)</span>
-                  <span>Ksh {getTotalPrice().toLocaleString()}</span>
+                  <span>KES {getTotalPrice().toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Service Fee</span>
-                  <span>Ksh 0</span>
+                  <span>KES 0</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Tax</span>
-                  <span>Ksh 0</span>
+                  <span>KES 0</span>
                 </div>
                 <div className="border-t border-gray-200 pt-2">
                   <div className="flex justify-between font-bold text-lg text-blue-800">
                     <span>Total</span>
-                    <span>Ksh {getTotalPrice().toLocaleString()}</span>
+                    <span>KES {getTotalPrice().toLocaleString()}</span>
                   </div>
                 </div>
               </div>
 
+              {/* Error Message */}
+              {errorMessage && (
+                <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
+                  <span className="text-sm">{errorMessage}</span>
+                </div>
+              )}
+
               {/* Process Payment Button */}
               <button
                 onClick={handleProcessPayment}
-                disabled={!selectedPaymentMethod || isProcessing}
-                className={`w-full mt-6 py-3 px-4 rounded-lg font-bold transition ${
-                  !selectedPaymentMethod || isProcessing
+                disabled={!canProceedWithPayment() || isProcessing}
+                className={`w-full mt-6 py-3 px-4 rounded-lg font-bold transition flex items-center justify-center ${
+                  !canProceedWithPayment() || isProcessing
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-700 text-white"
                 }`}
               >
                 {isProcessing ? (
-                  <div className="flex items-center justify-center">
+                  <>
                     <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
-                    Processing...
-                  </div>
+                    {selectedPaymentMethod === "mpesa" ? (
+                      mpesaState.isInitiating ? "Initiating..." : "Waiting for confirmation..."
+                    ) : (
+                      "Processing..."
+                    )}
+                  </>
                 ) : (
-                  `Pay Ksh ${getTotalPrice().toLocaleString()}`
+                  `Pay KES ${getTotalPrice().toLocaleString()}`
                 )}
               </button>
 
