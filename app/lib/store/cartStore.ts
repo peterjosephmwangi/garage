@@ -2,6 +2,18 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
+// export interface CartItem {
+//   $id: string;
+//   title: string;
+//   description: string;
+//   price: string;
+//   supplier: string;
+//   imageUrl?: string;
+//   serviceType: string;
+//   quantity: number;
+//   features?: string[];
+// }
+
 export interface CartItem {
   $id: string;
   title: string;
@@ -12,6 +24,8 @@ export interface CartItem {
   serviceType: string;
   quantity: number;
   features?: string[];
+  rating: number; // Add required property
+  reviews: number; // Add required property
 }
 
 interface CartState {

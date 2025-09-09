@@ -139,28 +139,48 @@ const CheckoutPage: React.FC = () => {
       `&paymentMethod=${encodeURIComponent(selectedPaymentMethod)}`
     );
   };
-
   const handleMpesaPayment = async () => {
     if (!isValidMpesaPhone(mpesaPhone)) {
       setErrorMessage("Please enter a valid Safaricom number");
       return;
     }
-
+  
     setErrorMessage(null);
     const cartProduct = createCartProduct();
-    
+  
     try {
       await initiateMpesaPayment(
         mpesaPhone,
         cartProduct,
         customerInfo,
-        (checkoutRequestID?: string) => handlePaymentSuccess(checkoutRequestID || `MPESA-${Date.now()}`),
-        items as CartItem[]
+        (checkoutRequestID?: string) => handlePaymentSuccess(checkoutRequestID || `MPESA-${Date.now()}`)
       );
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : "M-Pesa payment failed");
     }
   };
+
+  // const handleMpesaPayment = async () => {
+  //   if (!isValidMpesaPhone(mpesaPhone)) {
+  //     setErrorMessage("Please enter a valid Safaricom number");
+  //     return;
+  //   }
+
+  //   setErrorMessage(null);
+  //   const cartProduct = createCartProduct();
+    
+  //   try {
+  //     await initiateMpesaPayment(
+  //       mpesaPhone,
+  //       cartProduct,
+  //       customerInfo,
+  //       (checkoutRequestID?: string) => handlePaymentSuccess(checkoutRequestID || `MPESA-${Date.now()}`),
+  //       items as CartItem[]
+  //     );
+  //   } catch (error) {
+  //     setErrorMessage(error instanceof Error ? error.message : "M-Pesa payment failed");
+  //   }
+  // };
 
   const handleStripePayment = async () => {
     setErrorMessage(null);
