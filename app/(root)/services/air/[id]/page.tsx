@@ -10,7 +10,7 @@ import { ShoppingCart, Check } from "lucide-react";
 
 // Air conditioning service collection ID
 const databaseId = "680716c20000a52ce526";
-const collectionId = "6807177b002e9a2f1c5e"; // Air conditioning collection ID
+const collectionId = "6807170100118fcdb939"; // Air conditioning collection ID
 
 interface ServiceDetailsPageProps {
   params: Promise<{ id: string }>;
